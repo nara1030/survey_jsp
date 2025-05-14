@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MyBatis 3 Mapper 20130501//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.among.dao.UserDao">
+	<!-- users 테이블 및 auto_login 테이블 관련 -->
+
+    <!-- ID/PW로 사용자 조회 -->
+    <select id="findUser" parameterType="org.among.domain.User" resultType="org.among.domain.User">
+        SELECT id
+        	 , name
+        	 , role
+          FROM users
+         WHERE id = #{id}
+           AND password = #{password}
+    </select>
+
+    <!-- 토큰으로 사용자 조회 -->
+    <select id="findUserByToken" parameterType="org.among.domain.AutoLogin" resultType="org.among.domain.User">
+        SELECT u.id
+        	 , u.name
+        	 , u.role
+          FROM auto_login a
+          JOIN users u
+            ON a.user_id = u.id
+         WHERE a.token = #{token}
+           AND a.expired_dt > now()
+    </select>
+
+	<!-- 회원가입 -->
+	<insert id="insertUser" parameterType="org.among.domain.User">
+		INSERT INTO users (
+            id,
+            password,
+            name,
+            role,
+            join_dt,
+            last_modified_dt
+        ) VALUES (
+            #{id},
+            #{password},
+            #{name},
+            #{role},
+            now(),
+            now()
+        )
+	</insert>
+
+	<!-- 토큰 저장 -->
+	<insert id="insertToken" parameterType="org.among.domain.AutoLogin">
+		INSERT INTO auto_login (
+			token,
+            user_id,
+            device_info,
+            ip_address,
+            expired_dt,
+            created_dt,
+            modified_dt
+        ) VALUES (
+            #{token},
+            #{userId},
+            #{deviceInfo},
+            #{ipAddress},
+            #{expiredDate},
+            now(),
+            now()
+        )
+	</insert>
+	
+	<!-- 토큰 조회 -->
+	<select id="findExpiredToken" parameterType="org.among.domain.AutoLogin" resultType="string">
+        SELECT token
+          FROM auto_login
+         WHERE user_id = #{userId}
+           AND device_info = #{deviceInfo}
+           <![CDATA[
+           AND expired_dt < now()
+           ]]>
+    </select>
+	
+	<!-- 토큰 업데이트 -->
+	<update id="updateToken" parameterType="org.among.domain.AutoLogin">
+	    UPDATE auto_login
+	       SET token = #{password},
+	           expired_dt = #{expiredDate},
+	           modified_dt = now()
+	     WHERE user_id = #{userId}
+	       AND device_info = #{deviceInfo}
+	</update>
+	
+	<!-- 토큰 삭제 -->
+	<delete id="deleteToken" parameterType="org.among.domain.AutoLogin">
+	    DELETE FROM auto_login
+	     WHERE user_id = #{userId}
+	       AND device_info = #{deviceInfo}
+	</delete>
+</mapper>

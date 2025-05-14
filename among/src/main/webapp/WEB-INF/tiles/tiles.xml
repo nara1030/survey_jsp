@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+  <definition name="layout" template="/WEB-INF/views/layout.jsp">
+  	<put-attribute name="header" value="/WEB-INF/views/include/header.jsp" />
+    <put-attribute name="footer" value="/WEB-INF/views/include/footer.jsp" />
+  </definition>
+  <definition name=".tiles/*" extends="layout">
+  	<!-- 이 설정값보다 컨트롤러에서 넘어온 값이 우선 적용되어야 한다는데 안 받아져서 EL 적용 -->
+  	<put-attribute name="title" value="디폴트 타이틀" />
+    <put-attribute name="body" value="/WEB-INF/views/{1}.jsp"></put-attribute>
+  </definition>
+</tiles-definitions>
