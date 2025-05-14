@@ -1,0 +1,27 @@
+# === Eclipse 관련 설정 파일 (빌드, 워크스페이스 등) ===
+*.launch
+*.log
+.settings/
+.project
+.classpath
+
+# === 빌드 출력물 ===
+/target/
+bin/
+
+# === Maven ===
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# === OS 별 임시 파일 ===
+*.DS_Store
+*.swp
+*.swo
+Thumbs.db
